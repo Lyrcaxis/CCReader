@@ -40,7 +40,6 @@ namespace CCReader.Commands {
 				else if (t == typeof(int)) { int.Parse(x); }
 				else if (t == typeof(float)) { float.Parse(x); }
 				else if (t == typeof(bool)) { bool.Parse(x); }
-				else { return false; }
 			} catch { return false; }
 
 			return true;
