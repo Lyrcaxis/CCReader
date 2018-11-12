@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
 namespace CCReader.Commands {
 
@@ -11,63 +14,60 @@ namespace CCReader.Commands {
 		public abstract string KeyWord { get; }
 		public abstract string UsageString { get; }
 		protected abstract string HelpMessage();
-		protected abstract ValidationState CompleteValidate(string[] words);
 		public abstract void CallCommand();
 		public abstract void PrintParameterInfo(int i);
 
-		protected T CommandShape;
-
-		public bool ValidateKeyword(string keyword) => keyword.Equals(KeyWord,StringComparison.OrdinalIgnoreCase) || keyword.Equals(GetType().Name,StringComparison.OrdinalIgnoreCase);
-
+		public bool ValidateKeyword(string word) => EqualStrings(word,KeyWord) || EqualStrings(word,KeyWord);
 
 		public ValidationState Validate(string[] words) {
 			Type[] requiredParams = typeof(T).GenericTypeArguments;
 			if (requiredParams.Length == 0) { requiredParams = new Type[] { typeof(T) }; }
-
 			if (words.Length - 1 < requiredParams.Length) { return ValidationState.Error; }
 
-			for (int i = 0; i < requiredParams.Length && i < words.Length - 1; i++) {
-				if (!TryValidate(words[i + 1],requiredParams[i])) {
-					PrintParameterInfo(i);
-					return ValidationState.Error;
-				}
+			//Perform a first-hand validation to check if the types match.
+			List<object> args = new List<object>();
+			for (int i = 0; i < requiredParams.Length; i++) {
+				object obj = TryParse(words[i + 1],requiredParams[i]);
+				if (obj == null) { return ValidationState.Error; }
+				args.Add(obj);
 			}
 
-			return CompleteValidate(words);
+			return CompleteValidation(args);
 		}
 
-		bool TryValidate(string x,Type t) {
+		//This will handle extended validation from within the command.
+		protected abstract ValidationState CompleteValidation(List<object> args);
+
+		object TryParse(string x,Type t) {
+			object obj;
 			try {
-				if (t == typeof(string)) { return true; }
-				else if (t == typeof(int)) { int.Parse(x); }
-				else if (t == typeof(float)) { float.Parse(x); }
-				else if (t == typeof(bool)) { bool.Parse(x); }
-			} catch { return false; }
-
-			return true;
+				if (t == typeof(string)) { obj = x; }
+				else if (t == typeof(int)) { obj = int.Parse(x,NumberStyles.Any,CultureInfo.InvariantCulture); }
+				else if (t == typeof(float)) { obj = float.Parse(x,NumberStyles.Any,CultureInfo.InvariantCulture); }
+				else if (t == typeof(bool)) { obj = bool.Parse(x); }
+				//Other types cannot be parsed
+				else { return null; }
+			} catch { return null; }
+			return obj;
 		}
-
 
 		public virtual void PrintErrorMessage() {
 			Console.ForegroundColor = ConsoleColor.Red;
-
 			Console.WriteLine($"Invalid syntax for {GetType().Name}");
 			Console.WriteLine(UsageString);
 			Console.WriteLine($"Type 'help {KeyWord}' for more info.");
-
 			Console.ResetColor();
 		}
 
 		public virtual void PrintHelpMessage() {
 			Console.ForegroundColor = ConsoleColor.Blue;
 			Console.WriteLine(HelpMessage());
-
 			Console.ForegroundColor = ConsoleColor.DarkRed;
 			Console.WriteLine(UsageString);
-
 			Console.ResetColor();
 		}
 
-		protected static bool CheckIfStringsMatch(string a,string b) => string.Equals(a,b,StringComparison.OrdinalIgnoreCase);
+		protected static bool EqualStrings(string a,string b) => string.Equals(a,b,StringComparison.OrdinalIgnoreCase);
+		protected static string FindKeyInDictionary<U>(Dictionary<string,U> dict,string caseInsensitiveString) => dict.First(x => EqualStrings(x.Key,caseInsensitiveString)).Key;
 	}
 }

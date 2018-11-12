@@ -38,6 +38,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>7.1</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -48,6 +49,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>7.1</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>
@@ -59,10 +61,10 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\Base\BaseCommand.cs" />
-    <Compile Include="Commands\Base\ICommand.cs" />
-    <Compile Include="Commands\Base\ValidationState.cs" />
-    <Compile Include="Commands\Base\XCommand.cs" />
+    <Compile Include="Commands\Bases\BaseCommand.cs" />
+    <Compile Include="Commands\Bases\ICommand.cs" />
+    <Compile Include="Commands\Bases\ValidationState.cs" />
+    <Compile Include="Commands\Bases\XCommand.cs" />
     <Compile Include="Commands\Essential\ClearCommand.cs" />
     <Compile Include="Commands\Essential\ExitCommand.cs" />
     <Compile Include="Commands\Essential\HelpCommand.cs" />

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CCReader.Commands {
 
@@ -9,8 +11,10 @@ namespace CCReader.Commands {
 	abstract class BaseCommand : ICommand {
 		public abstract string KeyWord { get; }
 		public abstract string UsageString { get; }
+		public abstract void CallCommand();
+		public abstract ValidationState Validate(string[] words);
 
-		public bool ValidateKeyword(string keyword) => keyword.Equals(KeyWord,StringComparison.OrdinalIgnoreCase) || keyword.Equals(GetType().Name,StringComparison.OrdinalIgnoreCase);
+		public bool ValidateKeyword(string word) => EqualStrings(word,KeyWord) || EqualStrings(word,KeyWord);
 
 		public virtual void PrintErrorMessage() {
 			Console.ForegroundColor = ConsoleColor.Red;
@@ -25,14 +29,11 @@ namespace CCReader.Commands {
 		public virtual void PrintHelpMessage() {
 			Console.ForegroundColor = ConsoleColor.Blue;
 			Console.WriteLine(UsageString);
-
 			Console.ResetColor();
 		}
 
-
-		public abstract void CallCommand();
-		public abstract ValidationState Validate(string[] words);
+		protected static bool EqualStrings(string a,string b) => string.Equals(a,b,StringComparison.OrdinalIgnoreCase);
+		protected static string FindKeyInDictionary<U>(Dictionary<string,U> dict,string caseInsensitiveString) => dict.First(x => EqualStrings(x.Key,caseInsensitiveString)).Key;
 	}
-
 
 }

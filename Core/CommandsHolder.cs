@@ -9,17 +9,17 @@ namespace CCReader.Commands {
 		public static List<ICommand> Commands;
 
 		static CommandsHolder() {
-			Commands = new List<ICommand>();
 			Type[] types = Assembly.GetAssembly(typeof(ICommand)).GetTypes();
 			IEnumerable<Type> myTypes = types.Where(myType => myType.IsClass && !myType.IsAbstract && typeof(ICommand).IsAssignableFrom(myType));
 
+			var _Commands = new List<ICommand>();
 			foreach (Type type in myTypes) {
 				ICommand obj = (ICommand)Activator.CreateInstance(type);
 				if (obj == null) { Console.WriteLine("Error creating instance of " + type.Name); continue; }
-				Commands.Add(obj);
+				_Commands.Add(obj);
 			}
 
-			Commands = Commands.OrderBy(x => x.GetType().GetCustomAttribute<ListOrderAttribute>(false)?.Order ?? 10).ToList();
+			Commands = _Commands.OrderBy(x => x.GetType().GetCustomAttribute<ListOrderAttribute>(false)?.Order ?? 10).ToList();
 		}
 
 		public static void TryExecuteCommand(string[] words) {

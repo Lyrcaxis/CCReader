@@ -1,64 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using CCReader.Commands;
 
 namespace CCReader.Examples {
 
-	class CreateShape : XCommand<(string shape, float size, string color)> {
-
+	class CreateShape : XCommand<(string shape, string color, float size)> {
 		public override string KeyWord => "create";
-		public override string UsageString => "Usage: 'create [shape] [size] [color]'";
+		public override string UsageString => "Usage: 'create [shape] [color] [size]'";
 
 		Dictionary<string,Shape> ValidShapes = new Dictionary<string,Shape> {
 			{"Circle", new Circle()},
 			{"Square", new Square()},
 			{"Triangle",new Triangle()},
 		};
-
-		float minSize = 0, maxSize = 5;
-
 		Dictionary<string,ConsoleColor> ValidColors = new Dictionary<string,ConsoleColor>{
 			{"Red", ConsoleColor.Red},
 			{"Blue", ConsoleColor.Blue},
 			{"Green",ConsoleColor.Green},
 		};
 
-		protected override ValidationState CompleteValidate(string[] words) {
-			int step = 0;
+		string shape;
+		string color;
+		float size, minSize = 0, maxSize = 5;
+
+		protected override ValidationState CompleteValidation(List<object> args) {
 			try {
-				CommandShape.shape = ValidShapes.First(x => CheckIfStringsMatch(x.Key,words[1])).Key;
-				step++;
-				CommandShape.size = float.Parse(words[2],NumberStyles.Any,CultureInfo.InvariantCulture);
-				if (CommandShape.size > maxSize) { throw new Exception("ASDFFFFFFFF"); }
-				step++;
-				CommandShape.color = ValidColors.First(x => CheckIfStringsMatch(x.Key,words[3])).Key;
-			} catch {
-				PrintParameterInfo(step);
-				return ValidationState.Error;
-			}
+				shape = FindKeyInDictionary(ValidShapes,(string)args[0]);
+				color = FindKeyInDictionary(ValidColors,(string)args[1]);
+				size = (float)args[2];
+			} catch { return ValidationState.Error; }
 
 			return ValidationState.Success;
 		}
 
 		public override void CallCommand() {
-			Console.WriteLine("Creating {0} with size {1} and color {2} (size not implemented)",CommandShape.shape,CommandShape.size,CommandShape.color);
-			Console.ForegroundColor = ValidColors[CommandShape.color];
-			Console.WriteLine(ValidShapes[CommandShape.shape].ShapeInAscii);
+			Console.WriteLine("Creating {0} with size {1} and color {2} (size not implemented)",shape,size,color);
+			Console.ForegroundColor = ValidColors[color];
+			Console.WriteLine(ValidShapes[shape].ShapeInAscii);
 		}
 
-
 		protected override string HelpMessage() {
-			string x = string.Empty;
-			x += "Valid Shapes: ";
+			string x = "Valid Shapes: ";
 			foreach (var item in ValidShapes) { x += $"[{item.Key}]"; }
-			x += "\n";
-			x += $"Valid Size [{minSize} to {maxSize}]";
-			x += "\n";
-			x += "Valid Colors: ";
+			x += "\n Valid Colors: ";
 			foreach (var item in ValidColors) { x += $"[{item.Key}]"; }
-			x += "\n";
+			x += $"\n Valid Size [{minSize} to {maxSize}]";
 			return x;
 		}
 
@@ -71,7 +57,6 @@ namespace CCReader.Examples {
 			Console.WriteLine(" --");
 			Console.ResetColor();
 		}
-
 	}
 }
 
