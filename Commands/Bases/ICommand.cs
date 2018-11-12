@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace CCReader.Commands {
+﻿namespace CCReader.Commands {
 
 	/// <summary>
 	/// Interface for commands.

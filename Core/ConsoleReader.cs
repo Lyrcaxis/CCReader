@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using CCReader.Commands;
 
@@ -20,7 +15,7 @@ namespace CCReader {
 
 		async Task ConsoleChecking() {
 
-			CommandsHolder.TryExecuteCommand(new []{ "list" });
+			CommandsHolder.TryExecuteCommand(new[] { "list" });
 			Console.WriteLine();
 
 			while (true) {
@@ -48,7 +43,7 @@ namespace CCReader {
 			//move the cursor to just before the input was just entered
 			Console.CursorTop -= linesOfInput;
 			Console.CursorLeft = 0;
-			Console.WriteLine("> " + s); 
+			Console.WriteLine("> " + s);
 		}
 
 		string[] GetWordsFromString(ref string str) => str.Split(new[] { ' ' },StringSplitOptions.RemoveEmptyEntries);

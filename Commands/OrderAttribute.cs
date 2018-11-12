@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CCReader.Commands {
-[AttributeUsage(AttributeTargets.Class)]
+	[AttributeUsage(AttributeTargets.Class)]
 	class ListOrderAttribute : Attribute {
 		public int Order;
 
@@ -14,8 +10,6 @@ namespace CCReader.Commands {
 		/// Completely cosmetic.
 		/// </summary>
 		/// <param name="OrderInList">Order.</param>
-		public ListOrderAttribute(int OrderInList) {
-			this.Order = OrderInList;
-		}
+		public ListOrderAttribute(int OrderInList) => Order = OrderInList;
 	}
 }

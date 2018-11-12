@@ -6,15 +6,12 @@ using CCReader.Commands;
 
 namespace CCReader.Examples {
 
-	/// <summary>
-	/// Example command.
-	/// </summary>
 	class CreateShape : XCommand<(string shape, float size, string color)> {
 
 		public override string KeyWord => "create";
 		public override string UsageString => "Usage: 'create [shape] [size] [color]'";
 
-		Dictionary<string, Shape> ValidShapes = new Dictionary<string,Shape> {
+		Dictionary<string,Shape> ValidShapes = new Dictionary<string,Shape> {
 			{"Circle", new Circle()},
 			{"Square", new Square()},
 			{"Triangle",new Triangle()},
@@ -22,7 +19,7 @@ namespace CCReader.Examples {
 
 		float minSize = 0, maxSize = 5;
 
-		Dictionary<string, ConsoleColor> ValidColors = new Dictionary<string,ConsoleColor>{
+		Dictionary<string,ConsoleColor> ValidColors = new Dictionary<string,ConsoleColor>{
 			{"Red", ConsoleColor.Red},
 			{"Blue", ConsoleColor.Blue},
 			{"Green",ConsoleColor.Green},
@@ -34,11 +31,11 @@ namespace CCReader.Examples {
 				CommandShape.shape = ValidShapes.First(x => CheckIfStringsMatch(x.Key,words[1])).Key;
 				step++;
 				CommandShape.size = float.Parse(words[2],NumberStyles.Any,CultureInfo.InvariantCulture);
-				if (CommandShape.size>maxSize) { throw new Exception("ASDFFFFFFFF"); }
+				if (CommandShape.size > maxSize) { throw new Exception("ASDFFFFFFFF"); }
 				step++;
 				CommandShape.color = ValidColors.First(x => CheckIfStringsMatch(x.Key,words[3])).Key;
 			} catch {
-				WriteParameterInfo(step);
+				PrintParameterInfo(step);
 				return ValidationState.Error;
 			}
 
@@ -65,7 +62,7 @@ namespace CCReader.Examples {
 			return x;
 		}
 
-		public override void WriteParameterInfo(int i) {
+		public override void PrintParameterInfo(int i) {
 			Console.ForegroundColor = ConsoleColor.DarkMagenta;
 			Console.Write("-- ");
 			if (i == 0) { Console.Write("Wrong Shape"); }

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace CCReader.Commands {	
+namespace CCReader.Commands {
 
 	/// <summary>
 	/// Base Parametereless command.
@@ -12,12 +10,12 @@ namespace CCReader.Commands {
 		public abstract string KeyWord { get; }
 		public abstract string UsageString { get; }
 
-		public bool ValidateKeyword(string keyword) => keyword.Equals(KeyWord,StringComparison.OrdinalIgnoreCase) || keyword.Equals(this.GetType().Name,StringComparison.OrdinalIgnoreCase);
+		public bool ValidateKeyword(string keyword) => keyword.Equals(KeyWord,StringComparison.OrdinalIgnoreCase) || keyword.Equals(GetType().Name,StringComparison.OrdinalIgnoreCase);
 
 		public virtual void PrintErrorMessage() {
 			Console.ForegroundColor = ConsoleColor.Red;
 
-			Console.WriteLine($"Invalid syntax for {this.GetType().Name}");
+			Console.WriteLine($"Invalid syntax for {GetType().Name}");
 			Console.WriteLine(UsageString);
 			Console.WriteLine($"Type 'help {KeyWord}' for more info.");
 
